@@ -13,7 +13,20 @@ public class jdbcUtils {
 	private static ThreadLocal<Connection> connThreadLocal = new ThreadLocal<Connection>();
 
 	public static void main(String[] args) {
-		System.out.println(getConnection());
+		System.out.println(Thread.currentThread().getName());
+	      for(int i=0; i<100; i++){
+	         new Thread("" + i){
+	            public void run(){
+	            	try {
+	            		getConnection();
+						Thread.sleep(1000);
+						closeConnection();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+	            }
+	         }.start();
+	      }
 	}
 
 	public static Connection getConnection() {
@@ -29,6 +42,7 @@ public class jdbcUtils {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(connection);
 		return connection;
 	}
 
